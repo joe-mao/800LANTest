@@ -50,12 +50,12 @@ MainWindow::~MainWindow()
 
 bool MainWindow::setUp()
 {
-    ViStatus nRetStatus = viPrintf(networkAnalyzer, "CALC1:MEAS2:DEF 'S11'\n", 0);
+    ViStatus nRetStatus = viPrintf(networkAnalyzer, "CALC1:MEAS2:DEF 'S22'\n", 0);
     if(nRetStatus != VI_SUCCESS){
-        writeInformationToFileWithCurrentTime("CALC1:MEAS2:DEF 'S11' FAIL", "SCPI");
+        writeInformationToFileWithCurrentTime("CALC1:MEAS2:DEF 'S22' FAIL", "SCPI");
         return false;
     }
-    writeInformationToFileWithCurrentTime("CALC1:MEAS2:DEF 'S11' SUCCESS", "SCPI");
+    writeInformationToFileWithCurrentTime("CALC1:MEAS2:DEF 'S22' SUCCESS", "SCPI");
     mySleep(500);
 
     nRetStatus = viPrintf(networkAnalyzer, "DISP:MEAS2:FEED 1\n", 0);
@@ -88,12 +88,12 @@ bool MainWindow::setUp()
 
 
     //---------------------------------------------------------------------------------
-    nRetStatus = viPrintf(networkAnalyzer, "CALC2:MEAS4:DEF 'S22'\n", 0);
+    nRetStatus = viPrintf(networkAnalyzer, "CALC2:MEAS4:DEF 'S11'\n", 0);
     if(nRetStatus != VI_SUCCESS){
-        writeInformationToFileWithCurrentTime("CALC2:MEAS4:DEF 'S22' FAIL", "SCPI");
+        writeInformationToFileWithCurrentTime("CALC2:MEAS4:DEF 'S11' FAIL", "SCPI");
         return false;
     }
-    writeInformationToFileWithCurrentTime("CALC2:MEAS4:DEF 'S22' SUCCESS", "SCPI");
+    writeInformationToFileWithCurrentTime("CALC2:MEAS4:DEF 'S11' SUCCESS", "SCPI");
 
 mySleep(500);
 
@@ -107,12 +107,12 @@ mySleep(500);
     mySleep(500);
 
 
-    nRetStatus = viPrintf(networkAnalyzer, "CALC2:MEAS5:DEF 'S11'\n", 0);
+    nRetStatus = viPrintf(networkAnalyzer, "CALC2:MEAS5:DEF 'S22'\n", 0);
     if(nRetStatus != VI_SUCCESS){
-        writeInformationToFileWithCurrentTime("CALC2:MEAS5:DEF 'S11' FAIL", "SCPI");
+        writeInformationToFileWithCurrentTime("CALC2:MEAS5:DEF 'S22' FAIL", "SCPI");
         return false;
     }
-    writeInformationToFileWithCurrentTime("CALC2:MEAS5:DEF 'S11' SUCCESS", "SCPI");
+    writeInformationToFileWithCurrentTime("CALC2:MEAS5:DEF 'S22' SUCCESS", "SCPI");
     mySleep(500);
 
     nRetStatus = viPrintf(networkAnalyzer, "DISP:MEAS5:FEED 1\n", 0);
@@ -253,13 +253,13 @@ bool MainWindow::measure()
 
     ViByte rdBuff1_MAX[255] = {};
     QString qstr1_MAX = "";
-    qDebug()<<QDateTime::currentDateTime();
+   // qDebug()<<QDateTime::currentDateTime();
 
     mySleep(500);
 
 
     nRetStatus = viScanf(networkAnalyzer, "%s", rdBuff1_MAX);
-    qDebug()<<QDateTime::currentDateTime();
+   // qDebug()<<QDateTime::currentDateTime();
     //memset(rdBuff1, '\0', sizeof(rdBuff1));
 
     string str1_MAX = (char *)rdBuff1_MAX;
@@ -269,7 +269,7 @@ bool MainWindow::measure()
     double MaxValue_1 = qstr1_MAX.split(',').at(0).toDouble();
 //    //qDebug()<<"MAX"<<qstr2;
     writeInformationToFileWithCurrentTime(qstr1_MAX, "RESPONSE");
-    qDebug()<<MaxValue_1;
+    measureResult.push_back(MaxValue_1);
 
   //  qDebug()<<qstr1;2
 
@@ -298,13 +298,13 @@ bool MainWindow::measure()
 
     ViByte rdBuff1_MIN[255] = {};
     QString qstr1_MIN = "";
-    qDebug()<<QDateTime::currentDateTime();
+  //  qDebug()<<QDateTime::currentDateTime();
 
     mySleep(500);
 
 
     nRetStatus = viScanf(networkAnalyzer, "%s", rdBuff1_MIN);
-    qDebug()<<QDateTime::currentDateTime();
+   // qDebug()<<QDateTime::currentDateTime();
     //memset(rdBuff1, '\0', sizeof(rdBuff1));
 
     string str1_MIN = (char *)rdBuff1_MIN;
@@ -313,7 +313,12 @@ bool MainWindow::measure()
     double MinValue_1 = qstr1_MIN.split(',').at(0).toDouble();
 
     writeInformationToFileWithCurrentTime(qstr1_MIN, "RESPONSE");
-    qDebug()<<MinValue_1;
+   // qDebug()<<MinValue_1;
+    measureResult.push_back(MinValue_1);
+
+    measurePara.push_back(measureResult);
+
+    measureResult.clear();
 
     //--------------------------------------------------------------------------
 
@@ -337,13 +342,13 @@ bool MainWindow::measure()
 
         ViByte rdBuff2_MAX[255] = {};
         QString qstr2_MAX = "";
-        qDebug()<<QDateTime::currentDateTime();
+      //  qDebug()<<QDateTime::currentDateTime();
 
         mySleep(500);
 
 
         nRetStatus = viScanf(networkAnalyzer, "%s", rdBuff2_MAX);
-        qDebug()<<QDateTime::currentDateTime();
+      //  qDebug()<<QDateTime::currentDateTime();
         //memset(rdBuff1, '\0', sizeof(rdBuff1));
 
         string str2_MAX = (char *)rdBuff2_MAX;
@@ -353,7 +358,8 @@ bool MainWindow::measure()
         double MaxValue_2 = qstr2_MAX.split(',').at(0).toDouble();
     //    //qDebug()<<"MAX"<<qstr2;
         writeInformationToFileWithCurrentTime(qstr2_MAX, "RESPONSE");
-        qDebug()<<MaxValue_2;
+     //   qDebug()<<MaxValue_2;
+        measureResult.push_back(MaxValue_2);
 
       //  qDebug()<<qstr1;2
 
@@ -382,13 +388,13 @@ bool MainWindow::measure()
 
         ViByte rdBuff2_MIN[255] = {};
         QString qstr2_MIN = "";
-        qDebug()<<QDateTime::currentDateTime();
+        //qDebug()<<QDateTime::currentDateTime();
 
         mySleep(500);
 
 
         nRetStatus = viScanf(networkAnalyzer, "%s", rdBuff2_MIN);
-        qDebug()<<QDateTime::currentDateTime();
+       // qDebug()<<QDateTime::currentDateTime();
         //memset(rdBuff1, '\0', sizeof(rdBuff1));
 
         string str2_MIN = (char *)rdBuff2_MIN;
@@ -397,7 +403,12 @@ bool MainWindow::measure()
         double MinValue_2 = qstr2_MIN.split(',').at(0).toDouble();
 
         writeInformationToFileWithCurrentTime(qstr2_MIN, "RESPONSE");
-        qDebug()<<MinValue_2;
+       // qDebug()<<MinValue_2;
+        measureResult.push_back(MinValue_2);
+
+        measurePara.push_back(measureResult);
+
+        measureResult.clear();
 
         //----------------------------------------------------------------------------
         nRetStatus = viPrintf(networkAnalyzer, "CALC1:MEAS3:MARK1:FUNC:EXEC MAX\n", 0);
@@ -419,13 +430,13 @@ bool MainWindow::measure()
 
             ViByte rdBuff3_MAX[255] = {};
             QString qstr3_MAX = "";
-            qDebug()<<QDateTime::currentDateTime();
+         //   qDebug()<<QDateTime::currentDateTime();
 
             mySleep(500);
 
 
             nRetStatus = viScanf(networkAnalyzer, "%s", rdBuff3_MAX);
-            qDebug()<<QDateTime::currentDateTime();
+           // qDebug()<<QDateTime::currentDateTime();
             //memset(rdBuff1, '\0', sizeof(rdBuff1));
 
             string str3_MAX = (char *)rdBuff3_MAX;
@@ -435,7 +446,8 @@ bool MainWindow::measure()
             double MaxValue_3 = qstr3_MAX.split(',').at(0).toDouble();
         //    //qDebug()<<"MAX"<<qstr2;
             writeInformationToFileWithCurrentTime(qstr3_MAX, "RESPONSE");
-            qDebug()<<MaxValue_3;
+         //   qDebug()<<MaxValue_3;
+            measureResult.push_back(MaxValue_3);
 
           //  qDebug()<<qstr1;2
 
@@ -464,13 +476,13 @@ bool MainWindow::measure()
 
             ViByte rdBuff3_MIN[255] = {};
             QString qstr3_MIN = "";
-            qDebug()<<QDateTime::currentDateTime();
+          //  qDebug()<<QDateTime::currentDateTime();
 
             mySleep(500);
 
 
             nRetStatus = viScanf(networkAnalyzer, "%s", rdBuff3_MIN);
-            qDebug()<<QDateTime::currentDateTime();
+           // qDebug()<<QDateTime::currentDateTime();
             //memset(rdBuff1, '\0', sizeof(rdBuff1));
 
             string str3_MIN = (char *)rdBuff3_MIN;
@@ -479,7 +491,14 @@ bool MainWindow::measure()
             double MinValue_3 = qstr3_MIN.split(',').at(0).toDouble();
 
             writeInformationToFileWithCurrentTime(qstr3_MIN, "RESPONSE");
-            qDebug()<<MinValue_3;
+           // qDebug()<<MinValue_3;
+
+            measureResult.push_back(MinValue_3);
+            measurePara.push_back(measureResult);
+            measureResult.clear();
+
+            result.push_back(measurePara);
+            measurePara.clear();
 
 
             //-------------------------------------------------------------------------------
@@ -505,13 +524,13 @@ bool MainWindow::measure()
 
                 ViByte rdBuff4_MAX[255] = {};
                 QString qstr4_MAX = "";
-                qDebug()<<QDateTime::currentDateTime();
+              //  qDebug()<<QDateTime::currentDateTime();
 
                 mySleep(500);
 
 
                 nRetStatus = viScanf(networkAnalyzer, "%s", rdBuff4_MAX);
-                qDebug()<<QDateTime::currentDateTime();
+              //  qDebug()<<QDateTime::currentDateTime();
                 //memset(rdBuff1, '\0', sizeof(rdBuff1));
 
                 string str4_MAX = (char *)rdBuff4_MAX;
@@ -521,7 +540,9 @@ bool MainWindow::measure()
                 double MaxValue_4 = qstr4_MAX.split(',').at(0).toDouble();
             //    //qDebug()<<"MAX"<<qstr2;
                 writeInformationToFileWithCurrentTime(qstr4_MAX, "RESPONSE");
-                qDebug()<<MaxValue_4;
+             //   qDebug()<<MaxValue_4;
+                measureResult.push_back(MaxValue_4);
+
 
               //  qDebug()<<qstr1;2
 
@@ -550,13 +571,13 @@ bool MainWindow::measure()
 
                 ViByte rdBuff4_MIN[255] = {};
                 QString qstr4_MIN = "";
-                qDebug()<<QDateTime::currentDateTime();
+               // qDebug()<<QDateTime::currentDateTime();
 
                 mySleep(500);
 
 
                 nRetStatus = viScanf(networkAnalyzer, "%s", rdBuff4_MIN);
-                qDebug()<<QDateTime::currentDateTime();
+               // qDebug()<<QDateTime::currentDateTime();
                 //memset(rdBuff1, '\0', sizeof(rdBuff1));
 
                 string str4_MIN = (char *)rdBuff4_MIN;
@@ -565,7 +586,12 @@ bool MainWindow::measure()
                 double MinValue_4 = qstr4_MIN.split(',').at(0).toDouble();
 
                 writeInformationToFileWithCurrentTime(qstr4_MIN, "RESPONSE");
-                qDebug()<<MinValue_4;
+                //qDebug()<<MinValue_4;
+                measureResult.push_back(MinValue_4);
+
+                measurePara.push_back(measureResult);
+
+                measureResult.clear();
 
 
 
@@ -592,13 +618,13 @@ bool MainWindow::measure()
 
                     ViByte rdBuff5_MAX[255] = {};
                     QString qstr5_MAX = "";
-                    qDebug()<<QDateTime::currentDateTime();
+                 //   qDebug()<<QDateTime::currentDateTime();
 
                     mySleep(500);
 
 
                     nRetStatus = viScanf(networkAnalyzer, "%s", rdBuff5_MAX);
-                    qDebug()<<QDateTime::currentDateTime();
+                 //   qDebug()<<QDateTime::currentDateTime();
                     //memset(rdBuff1, '\0', sizeof(rdBuff1));
 
                     string str5_MAX = (char *)rdBuff5_MAX;
@@ -608,7 +634,9 @@ bool MainWindow::measure()
                     double MaxValue_5 = qstr5_MAX.split(',').at(0).toDouble();
                 //    //qDebug()<<"MAX"<<qstr2;
                     writeInformationToFileWithCurrentTime(qstr5_MAX, "RESPONSE");
-                    qDebug()<<MaxValue_5;
+                //    qDebug()<<MaxValue_5;
+                    measureResult.push_back(MaxValue_5);
+
 
                   //  qDebug()<<qstr1;2
 
@@ -636,13 +664,13 @@ bool MainWindow::measure()
 
                     ViByte rdBuff5_MIN[255] = {};
                     QString qstr5_MIN = "";
-                    qDebug()<<QDateTime::currentDateTime();
+                  //  qDebug()<<QDateTime::currentDateTime();
 
                     mySleep(500);
 
 
                     nRetStatus = viScanf(networkAnalyzer, "%s", rdBuff5_MIN);
-                    qDebug()<<QDateTime::currentDateTime();
+                   // qDebug()<<QDateTime::currentDateTime();
                     //memset(rdBuff1, '\0', sizeof(rdBuff1));
 
                     string str5_MIN = (char *)rdBuff5_MIN;
@@ -651,7 +679,10 @@ bool MainWindow::measure()
                     double MinValue_5 = qstr5_MIN.split(',').at(0).toDouble();
 
                     writeInformationToFileWithCurrentTime(qstr5_MIN, "RESPONSE");
-                    qDebug()<<MinValue_5;
+                    //qDebug()<<MinValue_5;
+                    measureResult.push_back(MinValue_5);
+                    measurePara.push_back(measureResult);
+                    measureResult.clear();
 
                     //---------------------6------------------------------------------------
                     nRetStatus = viPrintf(networkAnalyzer, "CALC2:MEAS6:MARK1:FUNC:EXEC MAX\n", 0);
@@ -676,13 +707,13 @@ bool MainWindow::measure()
 
                         ViByte rdBuff6_MAX[255] = {};
                         QString qstr6_MAX = "";
-                        qDebug()<<QDateTime::currentDateTime();
+                       // qDebug()<<QDateTime::currentDateTime();
 
                         mySleep(500);
 
 
                         nRetStatus = viScanf(networkAnalyzer, "%s", rdBuff6_MAX);
-                        qDebug()<<QDateTime::currentDateTime();
+                        //qDebug()<<QDateTime::currentDateTime();
                         //memset(rdBuff1, '\0', sizeof(rdBuff1));
 
                         string str6_MAX = (char *)rdBuff6_MAX;
@@ -692,7 +723,8 @@ bool MainWindow::measure()
                         double MaxValue_6 = qstr6_MAX.split(',').at(0).toDouble();
                     //    //qDebug()<<"MAX"<<qstr2;
                         writeInformationToFileWithCurrentTime(qstr6_MAX, "RESPONSE");
-                        qDebug()<<MaxValue_6;
+                     //   qDebug()<<MaxValue_6;
+                        measureResult.push_back(MaxValue_6);
 
                       //  qDebug()<<qstr1;2
 
@@ -721,13 +753,13 @@ bool MainWindow::measure()
 
                         ViByte rdBuff6_MIN[255] = {};
                         QString qstr6_MIN = "";
-                        qDebug()<<QDateTime::currentDateTime();
+                       // qDebug()<<QDateTime::currentDateTime();
 
                         mySleep(500);
 
 
                         nRetStatus = viScanf(networkAnalyzer, "%s", rdBuff6_MIN);
-                        qDebug()<<QDateTime::currentDateTime();
+                      //  qDebug()<<QDateTime::currentDateTime();
                         //memset(rdBuff1, '\0', sizeof(rdBuff1));
 
                         string str6_MIN = (char *)rdBuff6_MIN;
@@ -736,11 +768,12 @@ bool MainWindow::measure()
                         double MinValue_6 = qstr6_MIN.split(',').at(0).toDouble();
 
                         writeInformationToFileWithCurrentTime(qstr6_MIN, "RESPONSE");
-                        qDebug()<<MinValue_6;
-
-
-
-
+                      //  qDebug()<<MinValue_6;
+                        measureResult.push_back(MinValue_6);
+                        measurePara.push_back(measureResult);
+                        measureResult.clear();
+                        result.push_back(measurePara);
+                        measurePara.clear();
 
     return true;
 
@@ -758,13 +791,55 @@ bool MainWindow::setAttribute(ViSession ptr)
     return false;
 }
 
+bool MainWindow::writToLog(QString fileName)
+{
+    QFile file(fileName);
+    if(!file.open(QIODevice::Append | QIODevice::Text)){
+        return false;
+    }
+    QTextStream out(&file);
+    out<<"S11(MAX)"<<","<<"S11(MIN)"<<","<<"S22(MAX)"<<","<<"S22(MIN)"<<","<<"S12(MAX)"<<","<<"S12(MIN)"<<"\n";
+
+    for(vector<vector<vector<double>>>::iterator it = result.begin(); it != result.end(); ++it){
+        for(vector<vector<double>>::iterator it_measurePara = it->begin(); it_measurePara != it->end(); ++it_measurePara){
+            for(vector<double>::iterator it_measureResult = it_measurePara->begin(); it_measureResult != it_measurePara->end(); ++it_measureResult){
+                out<<*it_measureResult<<",";
+                if((*it_measureResult) <= -199){
+                    ++errorFlag;
+                }
+            }
+        }
+        out<<"\n";
+    }
+
+    file.close();
+    return true;
+}
+
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+    runFlag = false;
+    QWidget::closeEvent(event);
+}
+
 void MainWindow::on_btn_start_clicked()
 {
+
+    this->ui->btn_start->setEnabled(false);
+
+    errorFlag = 0;
+    totalTestCount = 0;
+    failTestCount = 0;
+
+
+    this->ui->lb_totalTestCount->setText(QString::number(totalTestCount));
+    this->ui->lb_failTestCount->setText(QString::number(failTestCount));
 
 
     ViStatus nRetStatus = viOpenDefaultRM(&rmSession);
     if(nRetStatus != VI_SUCCESS){
         writeInformationToFileWithCurrentTime("viOpenDefaultRM FAIL", "SCPI");
+        this->ui->btn_start->setEnabled(true);
         return;
     }
     writeInformationToFileWithCurrentTime("viOpenDefaultRM SUCCESS", "SCPI");
@@ -773,6 +848,7 @@ void MainWindow::on_btn_start_clicked()
 
     if(nRetStatus != VI_SUCCESS){
         writeInformationToFileWithCurrentTime("viOpen networkAnalyzer fail", "SCPI");
+        this->ui->btn_start->setEnabled(true);
         return;
     }
 
@@ -784,7 +860,7 @@ void MainWindow::on_btn_start_clicked()
     if(!nRetStatus){
         writeInformationToFileWithCurrentTime("viSetAttribute networkAnalyzer FAIL", "SCPI");
 
-
+        this->ui->btn_start->setEnabled(true);
         return;
     }
     writeInformationToFileWithCurrentTime("viSetAttribute networkAnalyzer SUCCESS", "SCPI");
@@ -800,13 +876,35 @@ void MainWindow::on_btn_start_clicked()
         while(runFlag){
 
             measure();
-            mySleep(1000);
+
+            writToLog("test.csv");
+
+            result.clear();
+
+            ++totalTestCount;
+
+            if(errorFlag != 0){
+                ++failTestCount;
+            }
+
+
+
+            this->ui->lb_totalTestCount->setText(QString::number(totalTestCount));
+            this->ui->lb_failTestCount->setText(QString::number(failTestCount));
+
+            errorFlag = 0;
+
+
+           // mySleep(1000);
         }
 
     }else{
+        this->ui->btn_start->setEnabled(true);
 
         return;
     }
+
+    this->ui->btn_start->setEnabled(true);
 
 
     viClose(networkAnalyzer);
